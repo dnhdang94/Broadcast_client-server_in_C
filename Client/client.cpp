@@ -9,7 +9,10 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
 
+
+int failure = 0;
 
 int client()
 {
@@ -27,14 +30,16 @@ int client()
 	/* Connect to server */
 	if (connect(sock_descriptor, (struct sockaddr *)&server, sizeof(server)) < 0) {
 		/* Fails to connect to server */
-		return 2;
+		failure = 1;
+		goto exit;
 	}
 	char buffer[MAX_BUFFER], server_reply[MAX_BUFFER];
 	int bytes_read, bytes_written;
 	/* Receive hello message from server */
 	if ((bytes_read = recv(sock_descriptor, server_reply, MAX_BUFFER, 0)) < 0) {
 		/* Can not receive hello message from server */
-		return 3;
+		failure = 1;
+		goto exit;
 	}
 	/* Terminate character */
 	server_reply[bytes_read] = '\0';
@@ -46,17 +51,25 @@ int client()
 		/* Send data */
 		if ((bytes_written = send(sock_descriptor, buffer, strlen(buffer), 0)) < 0) {
 			/* Fails to send to server */
-			return 3;
+			failure = 1;
+			goto exit;
 		}
 		/* Receive message back from server */
 		if ((bytes_read = recv(sock_descriptor, server_reply, MAX_BUFFER, 0)) < 0) {
 			/* Fails to receive message from server */
-			return 4;
+			failure = 1;
+			goto exit;
 		}
 		server_reply[bytes_read] = '\0';
 		printf("Server sends back: %s\n", server_reply);
 		memset(buffer, 0, MAX_BUFFER);
 		memset(server_reply, 0, MAX_BUFFER);
+	}
+	exit:
+	close(sock_descriptor);
+	if (failure) {
+		/* Fail */
+		return -1;
 	}
  	/* Success */
 	return 0;

@@ -17,19 +17,11 @@
 
 
 /* Init global server variables */
-int current_number_connections = -1;
-int client_socks[MAX_CONNECTIONS];
-pthread_mutex_t lock;
+int current_number_connections = 0;
 int failure = 0;
 
 int server()
 {
-	if (pthread_mutex_init(&lock, NULL) != 0)
-	{
-		/* Fails to init mutex */
-		failure = 1;
-		goto exit;
-	}
 	/* Server' s variables */
 	int socket_descriptor, client_sock, c;
 	struct sockaddr_in server, client;
@@ -37,6 +29,11 @@ int server()
 	socket_descriptor = socket(AF_INET, SOCK_STREAM, 0);
 	if (socket_descriptor == -1) {
 		/* Can not create socket descriptor */
+		return -1;
+	}
+	/* Prepare mutex */
+	if (pthread_mutex_init(&lock, NULL) != 0) {
+		/* Fails to init mutex */
 		failure = 1;
 		goto exit;
 	}
@@ -70,6 +67,7 @@ int server()
 	/* Destroy mutex */
 	exit:
 	pthread_mutex_destroy(&lock);
+	close(socket_descriptor);
 	if (failure) {
 		/* Fail */
 		return -1;

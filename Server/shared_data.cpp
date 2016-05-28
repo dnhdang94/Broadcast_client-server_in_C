@@ -11,3 +11,5 @@
 
 /* Prepare shared data */
 int number_connections = 0;
+int client_socks[MAX_CONNECTIONS];
+pthread_mutex_t lock;
