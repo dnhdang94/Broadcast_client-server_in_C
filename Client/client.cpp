@@ -42,7 +42,7 @@ int client()
 	memset(server_reply, 0, MAX_BUFFER);
 	while (1) {
 		printf("Type your message here: ");
-		scanf("%s", buffer);
+		gets(buffer);
 		/* Send data */
 		if ((bytes_written = send(sock_descriptor, buffer, strlen(buffer), 0)) < 0) {
 			/* Fails to send to server */
@@ -55,6 +55,8 @@ int client()
 		}
 		server_reply[bytes_read] = '\0';
 		printf("Server sends back: %s\n", server_reply);
+		memset(buffer, 0, MAX_BUFFER);
+		memset(server_reply, 0, MAX_BUFFER);
 	}
  	/* Success */
 	return 0;

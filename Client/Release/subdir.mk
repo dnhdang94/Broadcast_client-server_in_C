@@ -4,29 +4,23 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
-../handler.cpp \
-../main.cpp \
-../server.cpp \
-../shared_data.cpp 
+../client.cpp \
+../main.cpp 
 
 OBJS += \
-./handler.o \
-./main.o \
-./server.o \
-./shared_data.o 
+./client.o \
+./main.o 
 
 CPP_DEPS += \
-./handler.d \
-./main.d \
-./server.d \
-./shared_data.d 
+./client.d \
+./main.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
 %.o: ../%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	g++ -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

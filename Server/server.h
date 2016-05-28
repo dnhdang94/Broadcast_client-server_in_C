@@ -9,6 +9,8 @@
 #define SERVER_H_
 
 
+extern int current_number_connections;
+
 extern "C" int server();
 
 #endif /* SERVER_H_ */
